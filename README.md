@@ -30,3 +30,12 @@ $ mytex -p srcfile1.tex
 $ mytex -bm srcfile2.txt
 ```
 __NOTE:__ the file extension/suffix is not important. It can be anything, or absent, and the script will still run successfully. However, it is good practice to name LaTeX source files with a ".tex" suffix.
+
+
+## Weather Research Forecasting (WRF)
+
+The Weather Research Forecasting (WRF) Model is a state-of-the-art atmospheric modeling system designed for both meteorological research and numerical weather prediction. It offers a host of  options for atmospheric processes and can run on a variety of computing platforms. WRF excels in a broad range of applications across scales ranging from tens of meters to thousands of kilometers The Mesoscale and Microscale Meteorology Laboratory of NCAR supports the WRF system to the user community, and maintains the WRF code on GitHub. Check out [https://www.mmm.ucar.edu/weather-research-and-forecasting-model](https://www.mmm.ucar.edu/weather-research-and-forecasting-model) for more.
+
+We propose Bash scripts to install WRF in a custom local path in Slackware 14.2 and 15.0. The scripts install all the compilation and runtime dependencies in the custom path alongside the WRF install.
+
+
