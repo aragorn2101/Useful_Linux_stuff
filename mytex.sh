@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  mytex.sh
+#  mytex
 #  Script to run the latex command in non-stop mode along with the bibtex
 #  command sequences to generate the bibliography automatically. The script
 #  also provides the commands with pdf and minted functionalities.

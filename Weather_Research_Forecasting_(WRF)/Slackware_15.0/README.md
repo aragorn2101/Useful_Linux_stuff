@@ -1,11 +1,53 @@
 # The Weather Research and Forecasting (WRF) model
 
-We propose an installation script for WRF ARW (Advanced Research WRF) on Slackware 15.0. We made use of WRF version 4.4, as opposed to version 4.2.2 previously on 14.2, since it turned out that WRF 4.2.2 presented issues when compiled with GCC 11.x in Slackware 15.0.
+## install_wrfv4.4.sh
 
-**NOTE:** The main requirement is a 64-bit processor and a GNU/Linux operating system. The installation script was tested using a 64-bit Slackware 15.0 GNU/Linux installed on an Intel Core i7-7700K machine. Building and installing all the software on this machine takes around 20 minutes. It is expected to take a longer build time on lower spec machines. The final space taken on disk is around 1.1 GB for the software only, and around 30 GB when the geographical static data is included.
+The script installs WRF and all its dependencies in a custom location. The source code for the dependencies, and the source archives for both WRF and WPS should be placed in the same directory as the script. The script should be made executable and run. The later sections give details about the source code archives to be downloaded. The last section describes how to install NCAR Graphics and NCL separately in a Python environment.
+
+The generic call `./install_wrfv4.4.sh` will install WRF and its dependencies in a directory called `wrfv4.4` under the calling user's home directory (`${HOME}`). If the user wishes to install WRF in a different location, the call should be
+```
+$ OUTPUT=CUSTOM_PATH ./install_wrfv4.4.sh
+```
+
+WRF will be compiled in parallel using a default number of threads/cores calculated from the number of processors present on the machine. If a computer features 4 cores, then the number of cores used to build WRF is 3. If the user wishes to specify the number of threads/cores to use for building WRF, the call should be made as follows
+```
+$ NUMJOBS=NUMBER_OF_CORES_OR_THREADS ./install_wrfv4.4.sh
+```
+
+After installation in a path `OUTPUT` the final directory tree will look like this:
+```
+- [OUTPUT]/
+  - wrfv4.4/
+    - DATA/
+    - GEOG/
+    - WPS/
+    - WRF/
+    - deps/
+    - env.sh
+    - utils/
+```
+The script will set all permissions with respect to the user executing it.
+
+The `DATA` and `GEOG` directories are empty. These are created to allow the user to store input data close to the WRF software. Directory `DATA` normally would contain GRIB or netCDF files. It is recommended that the content of the archive containing the geographical input data mandatory fields is directly extracted to the `GEOG` as follows:
+```
+$ tar -C ${OUTPUT}/wrfv4.4/GEOG --strip-components=1 -zxf GEOG_MANDATORY_DATA.tar.gz
+```
+Then, the field `geog_data_path`, in namelist.wps, can be set to `${OUTPUT}/wrfv4.4/GEOG`.
+
+Directory `deps` contains dependency libraries and `utils` contains ncview, which is a useful tool to visualize netCDF files.
+
+The WPS directory contains the WRF pre-processor source code and the executable resulting from compilation: `geogrid.exe`, `ungrib.exe` and `metgrid.exe`. The WRF directory is where the WRF source code resides and after compilation it contains the four executables: `real.exe`, `ndown.exe`, `wrf.exe` and `tc.exe` under test/em\_real.
 
 
-### WRF
+#### Running WPS and WRF
+
+After compilation, everytime WPS or WRF is to be used, the `env.sh` script (found in the `wrfv4.4` directory) needs to be sourced. It sets up the proper environment required for the good functioning of WRF.
+```
+$ source env.sh
+```
+
+
+## WRF
 
 - WRF 4.4 </br>
 ``v4.4.tar.gz`` </br>
@@ -43,10 +85,10 @@ Compile for nesting? (1=basic, 2=preset moves, 3=vortex following) [default 1]
 The above two options are set in the configuration section, just before compiling WRF.  If you have a different machine or need for other nesting options, please feel free to modify the install script.
 
 
-### WRF pre-processing system (WPS)
+## WRF pre-processing system (WPS)
 
 - WPS 4.4 </br>
-``WPS-4.4.tar.gz`` </br>
+`WPS-4.4.tar.gz` </br>
 [https://github.com/wrf-model/WPS/releases](https://github.com/wrf-model/WPS/releases)
 The source code for WPS is required for a fully functional WRF package. As opposed to the WRF source code, the archive linked to by **Source code (tar.gz)** should be downloaded.
 
@@ -94,33 +136,34 @@ WPS is compiled with the option ``Linux x86_64, gfortran (dmpar)``. It is option
   40.  Cray XC CLE/Linux x86_64, Intel compiler   (dmpar_NO_GRIB2)
 ```
 
-### Dependencies and utilities
+## Dependencies and utilities
 
 The versions and the source tar balls that the script expect are listed below. The links to the webpages where they can be obtained are included.
 
 - netCDF 4.7.4 </br>
-``netcdf-c-4.7.4.tar.gz`` </br>
+`netcdf-c-4.7.4.tar.gz` </br>
 [https://www.unidata.ucar.edu/downloads/netcdf](https://www.unidata.ucar.edu/downloads/netcdf)
 
 - netCDF Fortran 4.5.3 </br>
-``netcdf-fortran-4.5.3.tar.gz`` </br>
+`netcdf-fortran-4.5.3.tar.gz` </br>
 [https://www.unidata.ucar.edu/downloads/netcdf](https://www.unidata.ucar.edu/downloads/netcdf)
 
 - OpenMPI 4.1.0 </br>
-``openmpi-4.1.0.tar.bz2`` </br>
+`openmpi-4.1.0.tar.bz2` </br>
 [https://www.open-mpi.org/software/ompi/v4.1/](https://www.open-mpi.org/software/ompi/v4.1/)
 
 - JasPer 1.900.1 </br>
-``jasper-1.900.1.zip``
+`jasper-1.900.1.zip`
 [https://ece.engr.uvic.ca/~frodo/jasper/](https://ece.engr.uvic.ca/~frodo/jasper/)
 
 - udunits 2.2.28 </br>
-``udunits-2.2.28.tar.gz`` </br>
+`udunits-2.2.28.tar.gz` </br>
 [https://www.unidata.ucar.edu/downloads/udunits/](https://www.unidata.ucar.edu/downloads/udunits/)
 
 - Ncview 1.93g </br>
-``ncview-1.93g.tar.gz`` </br>
+`ncview-1.93g.tar.gz` </br>
 [http://meteora.ucsd.edu/~pierce/ncview_home_page.html](http://meteora.ucsd.edu/~pierce/ncview_home_page.html)
+
 
 #### WRF 4.4 with OpenMPI
 
@@ -131,51 +174,12 @@ Therefore, we decided to adopt OpenMPI, with which WRF and WPS work just fine. M
 mpirun --use-hwthread-cpus -np [NUM] wrf.exe
 ```
 
-## install_wrfv4.4.sh
-
-The install script installs WRF, WPS and all their dependencies in a common directory. The source code for all dependencies, and the source archives for both WRF and WPS should be placed in the same directory as the script. The install script is made executable and run. The generic call is
-```
-$ NUMJOBS=NUMBER_OF_CORES_OR_THREADS OUTPUT=CUSTOM_PATH ./install_wrfv4.4.sh
-```
-
-``NUMJOBS`` and ``CUSTOM_PATH`` need not be specified. If not passed on the command line default values are adopted by the script.
-
-``NUMJOBS`` is the number of threads or cores used to compile the software. If it is not specified at the command line, a default value is calculated from the number of processors present on your machine. If your computer features 4 cores, the number of cores used to build software is 3.
-
-``OUTPUT`` is the directory under which all the software is placed. If not specified, the script will create a directory with name ``wrfv4`` in the user's home directory (taken from environment variable ``${HOME}``). Otherwise, wrfv4 will be placed under ``OUTPUT``. At the end of installation, the directory tree should look like this:
-```
-- ${OUTPUT}/
-  - wrfv4/
-    - DATA/
-    - GEOG/
-    - WPS/
-    - WRF/
-    - deps/
-    - env.sh
-    - utils/
-```
-
-The ``DATA`` and ``GEOG`` directories are empty. These are created to allow the user to store input data close to the WRF software. Directory ``DATA`` normally would contain GRIB or netCDF files. It is recommended that the content of the archive containing the geographical input data mandatory fields is directly extracted to the ``GEOG``:
-```
-$ tar -C ${OUTPUT}/wrfv4/GEOG --strip-components=1 -zxf GEOG_MANDATORY_DATA.tar.gz
-```
-Then, the field ``geog_data_path``, in namelist.wps, can be set to ``${OUTPUT}/wrfv4/GEOG``. Directory ``deps`` contains dependency libraries and ``utils`` contains ncview. The script will set all permissions with respect to the user executing it.
-
-The WPS directory contains the WRF pre-processor source code and the executable resulting from compilation: ``geogrid.exe``, ``ungrib.exe`` and ``metgrid.exe``. The WRF directory is where the WRF source code resides and it contains the four executables: ``real.exe``, ``ndown.exe``, ``wrf.exe`` and ``tc.exe`` under test/em\_real.
-
-#### Running WPS and WRF
-
-After compilation, everytime WPS or WRF is to be used, the ``env.sh`` script (found in the ``wrfv4`` directory) needs to be sourced. It sets up the proper environment required for the good functioning of WRF.
-```
-$ source env.sh
-```
-
 
 ## NCAR Graphics & NCL
 
 NCAR Graphics is a library containing Fortran/C applications and utilities used in displaying, editing and manipulating graphical output for scientific visualization. The NCAR Command Language (NCL) is an interpreted language (written in scripts) designed specifically for this purpose. The WPS/util directory contains NCL scripts, which are very useful to visualize the gridded domains for example.
 
-When installing WRF in Slackware 14.2, we provided NCAR graphics and NCL as a utility alongside. The NCL scripts are very useful to visualize set up parameters and data, thus helping to properly set up simulations. We were previously using the pre-compiled binaries for NCAR graphics. However, these binaries do not work in the new Slackware as they were compiled with earlier versions of libgfortran while Slackware 15.0 comes with libgfortran.so.5. Therefore, we now recommend installing NCL as part of a Python environment such as conda ([https://docs.conda.io](https://docs.conda.io)).
+When installing WRF in Slackware 14.2, we provided NCAR graphics and NCL as a utility alongside. The NCL scripts are very useful to visualize setup parameters and data, thus helping to properly tune simulations. We were previously using the pre-compiled binaries for NCAR graphics. However, these binaries do not work in the new Slackware as they were compiled with earlier versions of libgfortran, while Slackware 15.0 comes with libgfortran.so.5. Therefore, we now recommend installing NCL as part of a Python environment such as conda ([https://docs.conda.io](https://docs.conda.io)).
 
 If you already have a conda installed, you can jump to step 2. Otherwise, we explain how to install a minimal conda environment below.
 
@@ -191,13 +195,13 @@ $ sha256sum Miniconda3-py39_${VERSION}-Linux-x86_64.sh
 ```
 
 - Run the script:
-```  
+```
 $ chmod +x Miniconda3-py39_${VERSION}-Linux-x86_64.sh
 $ ./Miniconda3-py39_${VERSION}-Linux-x86_64.sh
 ```
 
 The latter prompts you at each step of the installation. You need to say "yes" to accept the *license terms* and when it asks to *initialize Miniconda3*. For the installation path you can just press ENTER and Miniconda will be placed under your home directory, e.g. `/home/USERNAME/miniconda3`.
-  
+
 **NOTE:** after installation, any new terminal which is opened will have conda activated automatically; it will change the prompt visually (usually `(base)` is added at the beginning). Automatic activation on launch is not desirable in a Slackware Linux environment (in my humble opinion) as it will override the system Python. So, we need to disable automatic activation with the following:
 ```
 $ conda config --set auto_activate_base false

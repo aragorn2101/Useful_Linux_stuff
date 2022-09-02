@@ -48,7 +48,7 @@
 #    programs, WRF and WPS should be in the same directory as this script.
 #
 
-PRGNAM=wrfv4
+PRGNAM=wrfv4.4
 
 # WRF version
 WRF_VER=4.4
