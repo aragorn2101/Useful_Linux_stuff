@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #  rename_spaces
-#  Script to rename file(s) using same filename but with spaces replaced with
-#  underscores.
+#  Script to rename file(s) using same filename but with each whitespace
+#  character replaced with an underscore.
 #
 # Copyright (C) 2022  Nitish Ragoomundun, Mauritius
 # All rights reserved.
@@ -27,7 +27,7 @@
 #
 # ----------------------------------------------------------------------------
 #  Place this script in /usr/local/bin and set permission to execute:
-#  cp mytex.sh /usr/local/bin/rename_spaces
+#  cp rename_spaces.sh /usr/local/bin/rename_spaces
 #  chmod 755 /usr/local/bin/rename_spaces
 #
 # ----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ print_help()
   echo
   echo "Usage: `basename ${0}` [FILE1 FILE2 FILE3 ...] [DIR1 DIR2 DIR3 ...]"
   echo
-  echo "Replaces space characters in file names by the underscore character, '-'. If"
+  echo "Replaces space characters in file names by the underscore character, '_'. If"
   echo "input file is a directory, by default the script will rename the directory and"
   echo "its contents recursively. If the full path to a regular file is given the"
   echo "regular file only will be subject to renaming. Several files or directories can"
