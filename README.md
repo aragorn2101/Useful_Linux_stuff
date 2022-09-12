@@ -101,26 +101,26 @@ Exit status:
     1      an unsupported option was given as input argument,  
     2      error due to no input argument.
 ```
-Example 1:
+**e.g. 1**
 ```
 $ rename_spaces  file\ 1\ a.txt
 ```
-Result: `file_1_a.txt`
+*Result:* `file_1_a.txt`
 
-Example 2:
+**e.g. 2**
 ```
 $ rename_spaces  dir\ A  /home/user1/Documents/file\ 3  /home/user1/Western\ Music/2022\ -\ song\ no.\ 1.mp3
 ```
-Results:
+*Results:*
 - `dir_A`, and  all the contents of `dir_A` renamed recursively.
 - `/home/user1/Documents/file_3`
 - `/home/user1/Western\ Music/2022_-_song_no._1.mp3`
 
-Example 3:
+**e.g. 3**
 ```
 $ rename_spaces  -d  /home/user1/Video\ Files/  /mnt/hdisk1/Users/user2/Documents\ and\ Settings/  /mnt/hdisk1/Users/user2/Documents\ and\ Settings/2014\ -\ Article\ B\ -\ part*.pdf
 ```
-Results:
+*Results:*
 - `/home/user1/Video_Files` and its contents left as is.
 - `/mnt/hdisk1/Users/user2/Documents_and_Settings` and its contents left untouched.
 - `/mnt/hdisk1/Users/user2/Documents_and_Settings/2014_-_Article_B_-_part_1.pdf`
@@ -132,5 +132,6 @@ Results:
 The Weather Research Forecasting (WRF) Model is a state-of-the-art atmospheric modeling system designed for both meteorological research and numerical weather prediction. It offers a host of  options for atmospheric processes and can run on a variety of computing platforms. WRF excels in a broad range of applications across scales ranging from tens of meters to thousands of kilometers The Mesoscale and Microscale Meteorology Laboratory of NCAR supports the WRF system to the user community, and maintains the WRF code on GitHub. Check out [https://www.mmm.ucar.edu/weather-research-and-forecasting-model](https://www.mmm.ucar.edu/weather-research-and-forecasting-model) for more.
 
 We propose Bash scripts to install WRF in a custom local path in both Slackware 14.2 and 15.0. The scripts install all the compilation and runtime dependencies in the custom path alongside the WRF install.
+
 
 
