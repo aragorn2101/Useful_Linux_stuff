@@ -63,10 +63,10 @@ fi
 Examples:
 ```
 user1@Desktop:~/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5/dir6$ pwd
-/home/user1/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5/dir6
+/home/user1/Documents/dir1/dir-2/dir 3/dir 4/dir_5/dir6
 
 user1@Desktop:~/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5/dir6$ up
-/home/user1/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5
+/home/user1/Documents/dir1/dir-2/dir 3/dir 4/dir_5
 user1@Desktop:~/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5$
 
 user1@Desktop:~/Documents/dir1/dir-2/dir\ 3/dir\ 4/dir_5$ up 3
