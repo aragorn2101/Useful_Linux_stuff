@@ -164,6 +164,7 @@ else
       RETVAL=$?
     else
       eval "${COMMAND} ${1}"
+      eval "${COMMAND} ${1}"
       RETVAL=$?
     fi
 
