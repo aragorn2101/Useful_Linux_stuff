@@ -160,10 +160,24 @@ else
       eval "${COMMAND} ${1}"
       eval "${BIBCOMMAND} ${BASEFILE}.aux"
       eval "${COMMAND} ${1}"
+
+      # Check if there is nomenclature and make index if necessary
+      if [ -f ${BASEFILE}.nlo ]; then
+        makeindex ${BASEFILE}.nlo -s nomencl.ist -o ${BASEFILE}.nls
+        eval "${COMMAND} ${1}"
+      fi
+
       eval "${COMMAND} ${1}"
       RETVAL=$?
     else
       eval "${COMMAND} ${1}"
+
+      # Check if there is nomenclature and make index if necessary
+      if [ -f ${BASEFILE}.nlo ]; then
+        makeindex ${BASEFILE}.nlo -s nomencl.ist -o ${BASEFILE}.nls
+        eval "${COMMAND} ${1}"
+      fi
+
       eval "${COMMAND} ${1}"
       RETVAL=$?
     fi
