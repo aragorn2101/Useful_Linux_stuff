@@ -69,6 +69,9 @@ NETCDF_F_VER=4.5.3
 # OpenMPI version
 OPENMPI_VER=4.1.0
 
+# libpng version
+LIBPNG_VER=1.2.59
+
 # JasPer version
 JASPER_VER=1.900.1
 
@@ -296,6 +299,30 @@ export LD_LIBRARY_PATH=${PKG}/deps/openmpi/lib:\$LD_LIBRARY_PATH
 
 # Update flags
 export LDFLAGS=-L${PKG}/deps/openmpi/lib\ ${LDFLAGS}
+
+
+
+###  libpng  ###
+echo
+echo "---------------------------------------------------------------"
+echo "Installing libpng ..."
+echo "---------------------------------------------------------------"
+echo
+cd $PKG/build
+tar xvf $CWD/libpng-${LIBPNG_VER}.tar.gz
+cd libpng-${LIBPNG_VER}
+chown -R ${USERID}:${GROUPID} .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+./configure --prefix=${PKG}/deps/grib2 \
+            --build=$ARCH-slackware-linux
+
+make
+make install
 
 
 
