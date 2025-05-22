@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-#  Script to install WRF 4.4 along with its dependencies.
+#  Script to install WRF 4.6.1 along with its dependencies.
 #
 #  Copyright (C) 2025 Nitish Ragoomundun, Mauritius
-#                     lrugratz       com
-#                             @gmail.
+#                     lrugratz@        com
+#                               gmail .
 #
 #  Redistribution and use of this script, with or without modification, is
 #  permitted provided that the following conditions are met:
@@ -26,6 +26,9 @@
 
 #
 #  The script will first install
+#  - zlib
+#  - libpng
+#  - HDF5
 #  - netCDF C
 #  - netCDF Fortran
 #  - OpenMPI
@@ -34,7 +37,7 @@
 #  - ncview
 #
 #  Then it will proceed with the installation of WRF, with WPS included. The
-#  default installation directory is a directory named wrfv3 in the current
+#  default installation directory is a directory named wrfv4 in the current
 #  user's home. This is done so that the user has permission to write to the
 #  directory, as it is often required when using the WRF model.
 #
@@ -48,11 +51,11 @@
 #    programs, WRF and WPS should be in the same directory as this script.
 #
 
-PRGNAM=wrfv4.4
+PRGNAM=wrfv4
 
 # WRF version
-WRF_VER=4.4
-WPS_VER=4.4
+WRF_VER=4.6.1
+WPS_VER=4.6.0
 
 # ZLIB version
 ZLIB_VER=1.3.1
@@ -164,6 +167,30 @@ export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
 echo -e "
 export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
 " >> ${PKG}/env.sh
+
+
+
+###  libpng  ###
+echo
+echo "---------------------------------------------------------------"
+echo "Installing libpng ..."
+echo "---------------------------------------------------------------"
+echo
+cd $PKG/build
+tar xvf $CWD/libpng-${LIBPNG_VER}.tar.gz
+cd libpng-${LIBPNG_VER}
+chown -R ${USERID}:${GROUPID} .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+./configure --prefix=${PKG}/deps/grib2 \
+            --build=$ARCH-slackware-linux
+
+make
+make install
 
 
 
@@ -299,30 +326,6 @@ export LD_LIBRARY_PATH=${PKG}/deps/openmpi/lib:\$LD_LIBRARY_PATH
 
 # Update flags
 export LDFLAGS=-L${PKG}/deps/openmpi/lib\ ${LDFLAGS}
-
-
-
-###  libpng  ###
-echo
-echo "---------------------------------------------------------------"
-echo "Installing libpng ..."
-echo "---------------------------------------------------------------"
-echo
-cd $PKG/build
-tar xvf $CWD/libpng-${LIBPNG_VER}.tar.gz
-cd libpng-${LIBPNG_VER}
-chown -R ${USERID}:${GROUPID} .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-./configure --prefix=${PKG}/deps/grib2 \
-            --build=$ARCH-slackware-linux
-
-make
-make install
 
 
 
@@ -463,7 +466,7 @@ find -L . \
 ./clean -a
 
 # Allow build with GRIB2 support
-sed -i '251s/FALSE/TRUE/' arch/Config.pl
+sed -i '262s/FALSE/TRUE/' arch/Config.pl
 
 # Configure with dmpar
 WRF_EM_CORE=1 \
