@@ -57,6 +57,9 @@ WPS_VER=4.4
 # ZLIB version
 ZLIB_VER=1.3.1
 
+# HDF5 version
+HDF5_VER=1.14.1-2
+
 # netCDF version
 NETCDF_VER=4.7.4
 
@@ -157,6 +160,44 @@ export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
 
 echo -e "
 export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
+" >> ${PKG}/env.sh
+
+
+
+###  HDF5  ###
+echo
+echo "---------------------------------------------------------------"
+echo "Building HDF5 ${HDF5_VER} ..."
+echo "---------------------------------------------------------------"
+echo
+mkdir -p $PKG/deps/netcdf
+cd $PKG/build
+tar xvf $CWD/hdf5-${HDF5_VER}.tar.bz2
+cd hdf5-${HDF5_VER}
+chown -R ${USERID}:${GROUPID} .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+./configure --prefix=${PKG}/deps/netcdf \
+            --with-zlib=${PKG}/deps/grib2 \
+            --enable-fortran \
+            --enable-shared \
+            --build=$ARCH-slackware-linux
+
+make
+make install
+
+export NETCDF=${PKG}/deps/netcdf
+export PATH=${NETCDF}/bin:${PATH}
+export LD_LIBRARY_PATH=${NETCDF}/lib:${LD_LIBRARY_PATH}
+
+echo -e "
+export NETCDF=${PKG}/deps/netcdf
+export PATH=\$NETCDF/bin:\$PATH
+export LD_LIBRARY_PATH=\$NETCDF/lib:\$LD_LIBRARY_PATH
 " >> ${PKG}/env.sh
 
 
