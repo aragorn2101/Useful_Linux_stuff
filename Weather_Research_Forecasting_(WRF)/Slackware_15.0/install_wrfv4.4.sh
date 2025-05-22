@@ -208,7 +208,6 @@ echo "---------------------------------------------------------------"
 echo "Building netCDF C ${NETCDF_VER} ..."
 echo "---------------------------------------------------------------"
 echo
-mkdir -p $PKG/deps/netcdf
 cd $PKG/build
 tar xvf $CWD/netcdf-c-${NETCDF_VER}.tar.gz
 cd netcdf-c-${NETCDF_VER}
@@ -228,15 +227,6 @@ find -L . \
 make
 make install
 
-export NETCDF=${PKG}/deps/netcdf
-export PATH=${NETCDF}/bin:${PATH}
-export LD_LIBRARY_PATH=${NETCDF}/lib:${LD_LIBRARY_PATH}
-
-echo -e "
-export NETCDF=${PKG}/deps/netcdf
-export PATH=\$NETCDF/bin:\$PATH
-export LD_LIBRARY_PATH=\$NETCDF/lib:\$LD_LIBRARY_PATH
-" >> ${PKG}/env.sh
 
 # Update flags
 export LDFLAGS=-L${NETCDF}/lib\ ${LDFLAGS}
@@ -244,6 +234,7 @@ export CPPFLAGS=-I${NETCDF}/include\ ${CPPFLAGS}
 export CXXFLAGS=-I${NETCDF}/include\ ${CXXFLAGS}
 export NETCDF_INC=${NETCDF}/include
 export NETCDF_LIB=${NETCDF}/lib
+
 
 echo
 echo "---------------------------------------------------------------"
