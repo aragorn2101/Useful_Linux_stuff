@@ -2,7 +2,7 @@
 #
 #  Script to install WRF 4.4 along with its dependencies.
 #
-#  Copyright (C) 2022 Nitish Ragoomundun, Mauritius
+#  Copyright (C) 2025 Nitish Ragoomundun, Mauritius
 #                     lrugratz       com
 #                             @gmail.
 #
@@ -53,6 +53,9 @@ PRGNAM=wrfv4.4
 # WRF version
 WRF_VER=4.4
 WPS_VER=4.4
+
+# ZLIB version
+ZLIB_VER=1.3.1
 
 # netCDF version
 NETCDF_VER=4.7.4
@@ -125,6 +128,36 @@ echo -e "
 #  Initialize environment for WRF
 
 " > ${PKG}/env.sh
+
+
+
+###  zlib  ###
+echo
+echo "---------------------------------------------------------------"
+echo "Building zlib ${ZLIB_VER} ..."
+echo "---------------------------------------------------------------"
+echo
+mkdir -p $PKG/deps/grib2
+cd $PKG/build
+tar xvf $CWD/zlib-${ZLIB_VER}.tar.gz
+cd zlib-${ZLIB_VER}
+chown -R ${USERID}:${GROUPID} .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+./configure --prefix=${PKG}/deps/grib2
+
+make
+make install
+
+export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
+
+echo -e "
+export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
+" >> ${PKG}/env.sh
 
 
 
