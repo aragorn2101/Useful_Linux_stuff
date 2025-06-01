@@ -254,10 +254,11 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/netcdf \
+./configure --prefix=${NETCDF} \
             --disable-dap \
-            --disable-netcdf-4 \
-            --disable-shared \
+            --enable-netcdf-4 \
+            --enable-hdf5 \
+            --enable-shared \
             --build=$ARCH-slackware-linux
 
 make
@@ -287,8 +288,9 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/netcdf \
-            --disable-shared \
+./configure --prefix=${NETCDF} \
+            --disable-hdf5 \
+            --enable-shared \
             --build=$ARCH-slackware-linux
 
 make
