@@ -74,7 +74,9 @@ WRF is compiled by the script with the ``(dmpar) GNU (gfortran/gcc)`` option. It
  60. (serial)  61. (smpar)  62. (dmpar)  63. (dm+sm)   PGI (pgf90/pgcc): -f90=pgf90
  64. (serial)  65. (smpar)  66. (dmpar)  67. (dm+sm)   INTEL (ifort/icc): HSW/BDW
  68. (serial)  69. (smpar)  70. (dmpar)  71. (dm+sm)   INTEL (ifort/icc): KNL MIC
- 72. (serial)  73. (smpar)  74. (dmpar)  75. (dm+sm)   FUJITSU (frtpx/fccpx): FX10/FX100 SPARC64 IXfx/Xlfx
+ 72. (serial)  73. (smpar)  74. (dmpar)  75. (dm+sm)   AMD (flang/clang) :  AMD ZEN1/ ZEN2/ ZEN3 Architectures
+ 76. (serial)  77. (smpar)  78. (dmpar)  79. (dm+sm)   INTEL (ifx/icx) : oneAPI LLVM
+ 80. (serial)  81. (smpar)  82. (dmpar)  83. (dm+sm)   FUJITSU (frtpx/fccpx): FX10/FX100 SPARC64 IXfx/Xlfx
 ```
 
 The install script also sets the nesting option to ``basic``. It is option 1 from the list available:
@@ -146,11 +148,17 @@ Source: [https://github.com/madler/zlib](https://github.com/madler/zlib)
 
 - libpng 1.2.59 (libpng12) </br>
 `libpng 1.2.59.tar.gz` </br>
-[https://sourceforge.net/projects/libpng/files/](https://sourceforge.net/projects/libpng/files/)
+Homepage: [http://www.libpng.org/pub/png/libpng.html](http://www.libpng.org/pub/png/libpng.html)
+Source: [https://sourceforge.net/projects/libpng/files/](https://sourceforge.net/projects/libpng/files/)
 
 - JasPer 1.900.29 </br>
 `jasper-1.900.29.tar.gz` </br>
 [https://ece.engr.uvic.ca/~frodo/jasper/](https://ece.engr.uvic.ca/~frodo/jasper/)
+
+- HDF5 1.14.4-2 </br>
+`hdf5-1.14.4-2.tar.gz` </br>
+Homepage: [https://www.hdfgroup.org/solutions/hdf5/](https://www.hdfgroup.org/solutions/hdf5/)
+Source: [https://github.com/HDFGroup/hdf5](https://github.com/HDFGroup/hdf5)
 
 - netCDF 4.7.4 </br>
 `netcdf-c-4.7.4.tar.gz` </br>
@@ -164,22 +172,23 @@ Source: [https://github.com/madler/zlib](https://github.com/madler/zlib)
 `openmpi-4.1.0.tar.bz2` </br>
 [https://www.open-mpi.org/software/ompi/v4.1/](https://www.open-mpi.org/software/ompi/v4.1/)
 
-- JasPer 1.900.1 </br>
-`jasper-1.900.1.zip`
-[https://ece.engr.uvic.ca/~frodo/jasper/](https://ece.engr.uvic.ca/~frodo/jasper/)
-
 - udunits 2.2.28 </br>
 `udunits-2.2.28.tar.gz` </br>
 [https://www.unidata.ucar.edu/downloads/udunits/](https://www.unidata.ucar.edu/downloads/udunits/)
 
-- Ncview 1.93g </br>
-`ncview-1.93g.tar.gz` </br>
-[http://meteora.ucsd.edu/~pierce/ncview_home_page.html](http://meteora.ucsd.edu/~pierce/ncview_home_page.html)
+- Ncview 2.1.11 </br>
+`ncview-2.1.11.tar.gz` </br>
+[https://cirrus.ucsd.edu/ncview/](https://cirrus.ucsd.edu/ncview/)
+
+
+### Ncview
+
+Ncview is a utility for browsing netCDF files. It is a very useful tool to visualise the data. If the data involves a time series, a "movie" of the data can be generated quickly. Our script includes ncview in a `utils` directory under `wrfv4`.
 
 
 #### WRF 4.4 with OpenMPI
 
-Originally, MPICH was used for the WRF installations as the WRF website recommended its use based on their experience. However, we had issues on Slackware 15.0 due to MPICH. First, the latter was not compiling unless the ``-fallow-argument-mismatch`` option was added to ``FFLAGS``. Then, although both WRF and WPS compiled successfully, geogrid.exe was encountering segmentation faults at runtime.
+On the WRF & MPAS forum, MPICH was originally used for the WRF installations based on their experience. However, we had issues on th MPICH on Slackware 15.0. First, the latter was not compiling unless the ``-fallow-argument-mismatch`` option was added to ``FFLAGS``. Then, although both WRF and WPS compiled successfully, geogrid.exe was encountering segmentation faults at runtime.
 
 Therefore, we decided to adopt OpenMPI, with which WRF and WPS work just fine. Moreover, OpenMPI gives the opportunity to explicitly specify using threads instead of cores when executing a program. For example, when using Intel processors there are hyperthreads available which can be used to launch jobs, analogous to having distinct physical cores. The functionality is used as follows:
 ```
