@@ -60,6 +60,12 @@ WPS_VER=4.6.0
 # ZLIB version
 ZLIB_VER=1.3.1
 
+# libpng version
+LIBPNG_VER=1.2.59
+
+# JasPer version
+JASPER_VER=1.900.1
+
 # HDF5 version
 HDF5_VER=1.14.1-2
 
@@ -67,16 +73,10 @@ HDF5_VER=1.14.1-2
 NETCDF_VER=4.7.4
 
 # netCDF Fortran version
-NETCDF_F_VER=4.5.3
+NETCDF_F_VER=4.5.4
 
 # OpenMPI version
-OPENMPI_VER=4.1.0
-
-# libpng version
-LIBPNG_VER=1.2.59
-
-# JasPer version
-JASPER_VER=1.900.1
+OPENMPI_VER=4.1.6
 
 # udunits version
 UDUNITS_VER=2.2.28
@@ -115,6 +115,7 @@ OUTPUT=${OUTPUT:-${HOME}}
 PKG=${OUTPUT}/${PRGNAM}
 
 
+# Set relevant environment variables and compilation flags
 export CC=gcc
 export CXX=g++
 export FC=gfortran
@@ -188,6 +189,42 @@ find -L . \
 
 make
 make install
+
+
+
+###  JasPer library  ###
+echo
+echo "---------------------------------------------------------------"
+echo "Installing JasPer library ..."
+echo "---------------------------------------------------------------"
+echo
+cd $PKG/build
+unzip $CWD/jasper-${JASPER_VER}.zip
+chmod 755 jasper-${JASPER_VER}
+cd jasper-${JASPER_VER}
+chown -R ${USERID}:${GROUPID} .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+./configure --prefix=${PKG}/deps/grib2 \
+            --program-prefix= \
+            --program-suffix= \
+            --build=$ARCH-slackware-linux
+
+make
+make install
+
+# Update environment variables
+export JASPERINC=${PKG}/deps/grib2/include
+export JASPERLIB=${PKG}/deps/grib2/lib
+
+echo -e "
+export JASPERINC=${PKG}/deps/grib2/include
+export JASPERLIB=${PKG}/deps/grib2/lib
+" >> ${PKG}/env.sh
 
 
 
@@ -265,14 +302,6 @@ make
 make install
 
 
-# Update flags
-export LDFLAGS=-L${NETCDF}/lib\ ${LDFLAGS}
-export CPPFLAGS=-I${NETCDF}/include\ ${CPPFLAGS}
-export CXXFLAGS=-I${NETCDF}/include\ ${CXXFLAGS}
-export NETCDF_INC=${NETCDF}/include
-export NETCDF_LIB=${NETCDF}/lib
-
-
 echo
 echo "---------------------------------------------------------------"
 echo "Building netCDF Fortran ${NETCDF_F_VER} ..."
@@ -324,52 +353,10 @@ find -L . \
 make
 make install
 
+# Update environment variables and compilation flags
 export PATH=${PKG}/deps/openmpi/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/deps/openmpi/lib:${LD_LIBRARY_PATH}
-
-echo -e "
-export PATH=${PKG}/deps/openmpi/bin:\$PATH
-export LD_LIBRARY_PATH=${PKG}/deps/openmpi/lib:\$LD_LIBRARY_PATH
-" >> ${PKG}/env.sh
-
-# Update flags
 export LDFLAGS=-L${PKG}/deps/openmpi/lib\ ${LDFLAGS}
-
-
-
-###  JasPer library  ###
-echo
-echo "---------------------------------------------------------------"
-echo "Installing JasPer library ..."
-echo "---------------------------------------------------------------"
-echo
-mkdir -p $PKG/deps/grib2
-cd $PKG/build
-unzip $CWD/jasper-${JASPER_VER}.zip
-chmod 755 jasper-${JASPER_VER}
-cd jasper-${JASPER_VER}
-chown -R ${USERID}:${GROUPID} .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-./configure --prefix=${PKG}/deps/grib2 \
-            --program-prefix= \
-            --program-suffix= \
-            --build=$ARCH-slackware-linux
-
-make
-make install
-
-export JASPERINC=${PKG}/deps/grib2/include
-export JASPERLIB=${PKG}/deps/grib2/lib
-
-echo -e "
-export JASPERINC=${PKG}/deps/grib2/include
-export JASPERLIB=${PKG}/deps/grib2/lib
-" >> ${PKG}/env.sh
 
 
 
@@ -379,7 +366,10 @@ echo "---------------------------------------------------------------"
 echo "Building udunits ..."
 echo "---------------------------------------------------------------"
 echo
-mkdir -p $PKG/deps/udunits
+
+UDUNITS=${PKG}/deps/udunits
+
+mkdir -p $UDUNITS
 cd $PKG/build
 tar xvf $CWD/udunits-${UDUNITS_VER}.tar.gz
 cd udunits-${UDUNITS_VER}
@@ -390,7 +380,7 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/udunits \
+./configure --prefix=${UDUNITS} \
             --disable-shared \
             --build=$ARCH-slackware-linux
 
@@ -400,14 +390,14 @@ make install
 find $PKG/deps/udunits -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
-UDUNITS=${PKG}/deps/udunits
+
+# Update relevant environment variables and compilation flags
 export PATH=${UDUNITS}/bin:${PATH}
 export LD_LIBRARY_PATH=${UDUNITS}/lib:${LD_LIBRARY_PATH}
+export CPPFLAGS="-I${UDUNITS}/include ${CPPFLAGS}"
+export CXXFLAGS="-I${UDUNITS}/include ${CXXFLAGS}"
+export LDFLAGS="-L${UDUNITS}/lib ${LDFLAGS}"
 
-echo -e "
-export PATH=${UDUNITS}/bin:\$PATH
-export LD_LIBRARY_PATH=${UDUNITS}/lib:\$LD_LIBRARY_PATH
-" >> ${PKG}/env.sh
 
 echo
 echo "---------------------------------------------------------------"
@@ -429,30 +419,51 @@ find -L . \
             --with-netcdf_incdir=${NETCDF}/include \
             --with-netcdf_libdir=${NETCDF}/lib \
             --with-nc-config=${NETCDF}/bin/nc-config \
-            --with-udunits_bindir=${UDUNITS}/bin \
-            --with-udunits_incdir=${UDUNITS}/include \
+            --with-png_incdir=${PKG}/deps/grib2/include \
+            --with-png_libdir=${PKG}/deps/grib2/lib \
+            --with-udunits2_incdir=${UDUNITS}/include \
+            --with-udunits2_libdir=${UDUNITS}/lib \
+            --with-x \
             --build=$ARCH-slackware-linux
+
+
+# Patch the Makefile to avoid "DSO missing from command line" error
+sed -i 's/^UDUNITS2_LDFLAGS.*/& -ldl/' src/Makefile
 
 make
 make install
 
-cp -a *.ncmap nc_overlay.* ${PKG}/utils/ncview/local/lib
+cp -a *.ncmap ${PKG}/utils/ncview/local/lib
 
 find $PKG/utils/ncview -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
-export XAPPLRESDIR=${HOME}/.app-defaults
+
+# Set relevant environment variables
 export PATH=${PKG}/utils/ncview/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/utils/ncview/lib:${LD_LIBRARY_PATH}
 
 echo -e "
+export UDUNITS2_XML_PATH=${UDUNITS}/share/udunits/udunits2.xml
 export XAPPLRESDIR=${HOME}/.app-defaults
-export PATH=${PKG}/utils/ncview/bin:\$PATH
-export LD_LIBRARY_PATH=${PKG}/utils/ncview/lib:\$LD_LIBRARY_PATH
+
+export PATH=${PATH}
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 " >> ${PKG}/env.sh
 
 
+# Clean build directory
 rm -rf $PKG/build
+
+
+# Unset some of the compilation environment variables, for proper build of WRF
+export CFLAGS=
+export CPPFLAGS=
+export CXXFLAGS=
+export FCFLAGS=
+export FFLAGS=
+export LDFLAGS=
 
 
 ###  WRF  ###
