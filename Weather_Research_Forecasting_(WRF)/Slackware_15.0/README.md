@@ -1,17 +1,17 @@
 # The Weather Research and Forecasting (WRF) model
 
-## install_wrfv4.4.sh
+## install_wrfv4.sh
 
 The script installs WRF and all its dependencies in a custom location. The source code for the dependencies, and the source archives for both WRF and WPS should be placed in the same directory as the script. The script should be made executable and run. The later sections give details about the source code archives to be downloaded. The last section describes how to install NCAR Graphics and NCL separately in a Python environment.
 
-The generic call `./install_wrfv4.4.sh` will install WRF and its dependencies in a directory called `wrfv4.4` under the calling user's home directory (`${HOME}`). If the user wishes to install WRF in a different location, the call should be
+The generic call `./install_wrfv4.sh` will install WRF and its dependencies in a directory called `wrfv4` under the calling user's home directory (`${HOME}`). If the user wishes to install WRF in a different location, the call should be
 ```
-$ OUTPUT=CUSTOM_PATH ./install_wrfv4.4.sh
+$ OUTPUT=CUSTOM_PATH ./install_wrfv4.sh
 ```
 
 WRF will be compiled in parallel using a default number of threads/cores calculated from the number of processors present on the machine. If a computer features 4 cores, then the number of cores used to build WRF is 3. If the user wishes to specify the number of threads/cores to use for building WRF, the call should be made as follows
 ```
-$ NUMJOBS=NUMBER_OF_CORES_OR_THREADS ./install_wrfv4.4.sh
+$ NUMJOBS=NUMBER_OF_CORES_OR_THREADS ./install_wrfv4.sh
 ```
 
 After installation in a path `OUTPUT` the final directory tree will look like this:
@@ -30,9 +30,9 @@ The script will set all permissions with respect to the user executing it.
 
 The `DATA` and `GEOG` directories are empty. These are created to allow the user to store input data close to the WRF software. Directory `DATA` normally would contain GRIB or netCDF files. It is recommended that the content of the archive containing the geographical input data mandatory fields is directly extracted to the `GEOG` as follows:
 ```
-$ tar -C ${OUTPUT}/wrfv4.4/GEOG --strip-components=1 -zxf GEOG_MANDATORY_DATA.tar.gz
+$ tar -C ${OUTPUT}/wrfv4/GEOG --strip-components=1 -zxf GEOG_MANDATORY_DATA.tar.gz
 ```
-Then, the field `geog_data_path`, in namelist.wps, can be set to `${OUTPUT}/wrfv4.4/GEOG`.
+Then, the field `geog_data_path`, in namelist.wps, can be set to `${OUTPUT}/wrfv4/GEOG`.
 
 Directory `deps` contains dependency libraries and `utils` contains ncview, which is a useful tool to visualize netCDF files.
 
@@ -41,7 +41,7 @@ The WPS directory contains the WRF pre-processor source code and the executable 
 
 #### Running WPS and WRF
 
-After compilation, everytime WPS or WRF is to be used, the `env.sh` script (found in the `wrfv4.4` directory) needs to be sourced. It sets up the proper environment required for the good functioning of WRF.
+After compilation, everytime WPS or WRF is to be used, the `env.sh` script (found in the `wrfv4` directory) needs to be sourced. It sets up the proper environment required for the good functioning of WRF.
 ```
 $ source env.sh
 ```
@@ -49,10 +49,9 @@ $ source env.sh
 
 ## WRF
 
-- WRF 4.4 </br>
-``v4.4.tar.gz`` </br>
+- WRF 4.6.1 </br>
+``v4.6.1.tar.gz`` </br>
 [https://github.com/wrf-model/WRF/releases](https://github.com/wrf-model/WRF/releases)
-It is important that the archive **v4.4.tar.gz** is downloaded. The link pointed to by *Source code* lack a submodule. A note is attached on the GibHub release page explaining this issue.
 
 WRF is compiled by the script with the ``(dmpar) GNU (gfortran/gcc)`` option. It means that it is compiled for an architecture supporting Dynamic Memory Parallelism using a GNU/Linux operating system. This is implemented usually by the MPI standard on multi-core CPUs. It is option number 34 from the list shown below. This list is obtained by running WRF's internal configure script manually (list is given below).
 ```
@@ -87,8 +86,8 @@ The above two options are set in the configuration section, just before compilin
 
 ## WRF pre-processing system (WPS)
 
-- WPS 4.4 </br>
-`WPS-4.4.tar.gz` </br>
+- WPS 4.6.0 </br>
+`WPS-4.6.0.tar.gz` </br>
 [https://github.com/wrf-model/WPS/releases](https://github.com/wrf-model/WPS/releases)
 The source code for WPS is required for a fully functional WRF package. As opposed to the WRF source code, the archive linked to by **Source code (tar.gz)** should be downloaded.
 
@@ -139,6 +138,19 @@ WPS is compiled with the option ``Linux x86_64, gfortran (dmpar)``. It is option
 ## Dependencies and utilities
 
 The versions and the source tar balls that the script expect are listed below. The links to the webpages where they can be obtained are included.
+
+- zlib 1.3.1 </br>
+`zlib-1.3.1.tar.gz` </br>
+Homepage: [https://zlib.net/](https://zlib.net/) </br>
+Source: [https://github.com/madler/zlib](https://github.com/madler/zlib)
+
+- libpng 1.2.59 (libpng12) </br>
+`libpng 1.2.59.tar.gz` </br>
+[https://sourceforge.net/projects/libpng/files/](https://sourceforge.net/projects/libpng/files/)
+
+- JasPer 1.900.29 </br>
+`jasper-1.900.29.tar.gz` </br>
+[https://ece.engr.uvic.ca/~frodo/jasper/](https://ece.engr.uvic.ca/~frodo/jasper/)
 
 - netCDF 4.7.4 </br>
 `netcdf-c-4.7.4.tar.gz` </br>
