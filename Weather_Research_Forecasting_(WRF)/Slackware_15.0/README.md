@@ -4,7 +4,7 @@
 
 The script installs WRF and all its dependencies in a custom location. The source code for the dependencies, and the source archives for both WRF and WPS should be placed in the same directory as the script. The script should be made executable and run. The later sections give details about the source code archives to be downloaded. The last section describes how to install NCAR Graphics and NCL separately in a Python environment.
 
-The generic call `./install_wrfv4.sh` will install WRF and its dependencies in a directory called `wrfv4` under the calling user's home directory (`${HOME}`). If the user wishes to install WRF in a different location, the call should be
+All the source code archives of WRF, WPS and all the dependencies must be downloaded and put in the same directory as the script. The generic call `./install_wrfv4.sh` will install WRF and its dependencies in a directory called `wrfv4` under the user's home directory (`${HOME}`). If the user wishes to install WRF in a different location, the call should be
 ```
 $ OUTPUT=CUSTOM_PATH ./install_wrfv4.sh
 ```
@@ -37,14 +37,6 @@ Then, the field `geog_data_path`, in namelist.wps, can be set to `${OUTPUT}/wrfv
 Directory `deps` contains dependency libraries and `utils` contains ncview, which is a useful tool to visualize netCDF files.
 
 The WPS directory contains the WRF pre-processor source code and the executable resulting from compilation: `geogrid.exe`, `ungrib.exe` and `metgrid.exe`. The WRF directory is where the WRF source code resides and after compilation it contains the four executables: `real.exe`, `ndown.exe`, `wrf.exe` and `tc.exe` under test/em\_real.
-
-
-#### Running WPS and WRF
-
-After compilation, everytime WPS or WRF is to be used, the `env.sh` script (found in the `wrfv4` directory) needs to be sourced. It sets up the proper environment required for the good functioning of WRF.
-```
-$ source env.sh
-```
 
 
 ## WRF
@@ -148,7 +140,7 @@ Source: [https://github.com/madler/zlib](https://github.com/madler/zlib)
 
 - libpng 1.2.59 (libpng12) </br>
 `libpng 1.2.59.tar.gz` </br>
-Homepage: [http://www.libpng.org/pub/png/libpng.html](http://www.libpng.org/pub/png/libpng.html)
+Homepage: [http://www.libpng.org/pub/png/libpng.html](http://www.libpng.org/pub/png/libpng.html) </br>
 Source: [https://sourceforge.net/projects/libpng/files/](https://sourceforge.net/projects/libpng/files/)
 
 - JasPer 1.900.29 </br>
@@ -157,16 +149,18 @@ Source: [https://sourceforge.net/projects/libpng/files/](https://sourceforge.net
 
 - HDF5 1.14.4-2 </br>
 `hdf5-1.14.4-2.tar.gz` </br>
-Homepage: [https://www.hdfgroup.org/solutions/hdf5/](https://www.hdfgroup.org/solutions/hdf5/)
+Homepage: [https://www.hdfgroup.org/solutions/hdf5/](https://www.hdfgroup.org/solutions/hdf5/) </br>
 Source: [https://github.com/HDFGroup/hdf5](https://github.com/HDFGroup/hdf5)
 
 - netCDF 4.7.4 </br>
 `netcdf-c-4.7.4.tar.gz` </br>
-[https://www.unidata.ucar.edu/downloads/netcdf](https://www.unidata.ucar.edu/downloads/netcdf)
+Homepage: [https://www.unidata.ucar.edu/software/netcdf/](https://www.unidata.ucar.edu/software/netcdf/) </br>
+Source: [https://github.com/Unidata/netcdf-c](https://github.com/Unidata/netcdf-c)
 
 - netCDF Fortran 4.5.3 </br>
 `netcdf-fortran-4.5.3.tar.gz` </br>
-[https://www.unidata.ucar.edu/downloads/netcdf](https://www.unidata.ucar.edu/downloads/netcdf)
+Homepage: [https://www.unidata.ucar.edu/software/netcdf/](https://www.unidata.ucar.edu/software/netcdf/) </br>
+Source: [https://github.com/Unidata/netcdf-fortran](https://github.com/Unidata/netcdf-fortran)
 
 - OpenMPI 4.1.0 </br>
 `openmpi-4.1.0.tar.bz2` </br>
@@ -181,9 +175,18 @@ Source: [https://github.com/HDFGroup/hdf5](https://github.com/HDFGroup/hdf5)
 [https://cirrus.ucsd.edu/ncview/](https://cirrus.ucsd.edu/ncview/)
 
 
-### Ncview
+## Running WPS and WRF after install
 
-Ncview is a utility for browsing netCDF files. It is a very useful tool to visualise the data. If the data involves a time series, a "movie" of the data can be generated quickly. Our script includes ncview in a `utils` directory under `wrfv4`.
+After install, open a new terminal, source the environment script and you are good to go:
+```
+$ source ${HOME}/wrfv4/env.sh
+```
+The above command must be run every time you need to run WRF/WPS in a new terminal. The `env.sh` script sets up the proper environment variables (e.g. `PATH`, `JASPERLIB`, `NETCDF`, ...) required for the good functioning of WRF.
+
+
+## Ncview
+
+Ncview is a utility for browsing netCDF files. It is a very useful tool to visualise the data. If the data involves a time series, a "movie" of the data can be generated quickly. Our script includes ncview in a `utils` directory under `wrfv4`. It can be run on the command line by just calling `ncview` (provided the environment has been set properly by `env.sh` as described above).
 
 
 #### WRF 4.4 with OpenMPI
