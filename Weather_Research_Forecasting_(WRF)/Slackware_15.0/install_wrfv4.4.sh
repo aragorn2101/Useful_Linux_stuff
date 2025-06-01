@@ -25,14 +25,14 @@
 #
 
 #
-#  The script will first install
+#  The script will first install the following dependencies
 #  - zlib
 #  - libpng
+#  - JasPer
 #  - HDF5
 #  - netCDF C
 #  - netCDF Fortran
 #  - OpenMPI
-#  - JasPer
 #  - udunits
 #  - ncview
 #
@@ -64,7 +64,7 @@ ZLIB_VER=1.3.1
 LIBPNG_VER=1.2.59
 
 # JasPer version
-JASPER_VER=1.900.1
+JASPER_VER=1.900.29
 
 # HDF5 version
 HDF5_VER=1.14.1-2
@@ -199,7 +199,7 @@ echo "Installing JasPer library ..."
 echo "---------------------------------------------------------------"
 echo
 cd $PKG/build
-unzip $CWD/jasper-${JASPER_VER}.zip
+tar xvf $CWD/jasper-${JASPER_VER}.tar.gz
 chmod 755 jasper-${JASPER_VER}
 cd jasper-${JASPER_VER}
 chown -R ${USERID}:${GROUPID} .
@@ -300,7 +300,6 @@ find -L . \
 
 make
 make install
-
 
 echo
 echo "---------------------------------------------------------------"
@@ -464,6 +463,7 @@ export CXXFLAGS=
 export FCFLAGS=
 export FFLAGS=
 export LDFLAGS=
+
 
 
 ###  WRF  ###
