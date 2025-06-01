@@ -82,7 +82,7 @@ JASPER_VER=1.900.1
 UDUNITS_VER=2.2.28
 
 # ncview version
-NCVIEW_VER=1.93g
+NCVIEW_VER=2.1.11
 
 
 # Set number of parallel threads for compilation process
@@ -135,7 +135,6 @@ mkdir -p $PKG/{DATA,GEOG,WPS,WRF,deps,utils,build}
 ###  Initialize environment setup script  ###
 echo -e "
 #  Initialize environment for WRF
-
 " > ${PKG}/env.sh
 
 
@@ -162,11 +161,9 @@ find -L . \
 make
 make install
 
+# Update environment variables
+export PATH=${PKG}/deps/grib2/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
-
-echo -e "
-export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
-" >> ${PKG}/env.sh
 
 
 
@@ -200,7 +197,10 @@ echo "---------------------------------------------------------------"
 echo "Building HDF5 ${HDF5_VER} ..."
 echo "---------------------------------------------------------------"
 echo
-mkdir -p $PKG/deps/netcdf
+
+export NETCDF=${PKG}/deps/netcdf
+
+mkdir -p $NETCDF
 cd $PKG/build
 tar xvf $CWD/hdf5-${HDF5_VER}.tar.bz2
 cd hdf5-${HDF5_VER}
@@ -211,7 +211,7 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/netcdf \
+./configure --prefix=${NETCDF} \
             --with-zlib=${PKG}/deps/grib2 \
             --enable-fortran \
             --enable-shared \
@@ -220,15 +220,21 @@ find -L . \
 make
 make install
 
-export NETCDF=${PKG}/deps/netcdf
+# Update environment variables
 export PATH=${NETCDF}/bin:${PATH}
 export LD_LIBRARY_PATH=${NETCDF}/lib:${LD_LIBRARY_PATH}
 
 echo -e "
-export NETCDF=${PKG}/deps/netcdf
-export PATH=\$NETCDF/bin:\$PATH
-export LD_LIBRARY_PATH=\$NETCDF/lib:\$LD_LIBRARY_PATH
+export NETCDF=${NETCDF}
 " >> ${PKG}/env.sh
+
+
+# Set relevant environment variables and update compilation flags
+export NETCDF_INC=${NETCDF}/include
+export NETCDF_LIB=${NETCDF}/lib
+export CPPFLAGS=-I${NETCDF}/include\ ${CPPFLAGS}
+export CXXFLAGS=-I${NETCDF}/include\ ${CXXFLAGS}
+export LDFLAGS=-L${NETCDF}/lib\ ${LDFLAGS}
 
 
 
