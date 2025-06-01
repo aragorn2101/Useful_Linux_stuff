@@ -67,7 +67,7 @@ LIBPNG_VER=1.2.59
 JASPER_VER=1.900.29
 
 # HDF5 version
-HDF5_VER=1.14.1-2
+HDF5_VER=1.14.4-2
 
 # netCDF version
 NETCDF_VER=4.7.4
@@ -239,7 +239,7 @@ export NETCDF=${PKG}/deps/netcdf
 
 mkdir -p $NETCDF
 cd $PKG/build
-tar xvf $CWD/hdf5-${HDF5_VER}.tar.bz2
+tar xvf $CWD/hdf5-${HDF5_VER}.tar.gz
 cd hdf5-${HDF5_VER}
 chown -R ${USERID}:${GROUPID} .
 find -L . \
