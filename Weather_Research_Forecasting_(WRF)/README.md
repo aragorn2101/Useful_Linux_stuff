@@ -161,13 +161,13 @@ Source: [https://github.com/HDFGroup/hdf5](https://github.com/HDFGroup/hdf5)
 Homepage: [https://www.unidata.ucar.edu/software/netcdf/](https://www.unidata.ucar.edu/software/netcdf/) </br>
 Source: [https://github.com/Unidata/netcdf-c](https://github.com/Unidata/netcdf-c)
 
-- netCDF Fortran 4.5.3 </br>
-`netcdf-fortran-4.5.3.tar.gz` </br>
+- netCDF Fortran 4.5.4 </br>
+`netcdf-fortran-4.5.4.tar.gz` </br>
 Homepage: [https://www.unidata.ucar.edu/software/netcdf/](https://www.unidata.ucar.edu/software/netcdf/) </br>
 Source: [https://github.com/Unidata/netcdf-fortran](https://github.com/Unidata/netcdf-fortran)
 
-- OpenMPI 4.1.0 </br>
-`openmpi-4.1.0.tar.bz2` </br>
+- OpenMPI 4.1.6 </br>
+`openmpi-4.1.6.tar.bz2` </br>
 [https://www.open-mpi.org/software/ompi/v4.1/](https://www.open-mpi.org/software/ompi/v4.1/)
 
 - udunits 2.2.28 </br>
