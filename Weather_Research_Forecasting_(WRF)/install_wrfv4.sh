@@ -185,7 +185,7 @@ find -L . \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 ./configure --prefix=${PKG}/deps/grib2 \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -212,7 +212,7 @@ find -L . \
 ./configure --prefix=${PKG}/deps/grib2 \
             --program-prefix= \
             --program-suffix= \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -252,7 +252,7 @@ find -L . \
             --with-zlib=${PKG}/deps/grib2 \
             --enable-fortran \
             --enable-shared \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -296,7 +296,7 @@ find -L . \
             --enable-netcdf-4 \
             --enable-hdf5 \
             --enable-shared \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -319,7 +319,7 @@ find -L . \
 ./configure --prefix=${NETCDF} \
             --disable-hdf5 \
             --enable-shared \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -347,7 +347,7 @@ find -L . \
             --sysconfdir=${PKG}/deps/openmpi/etc \
             --enable-mpi1-compatibility \
             --enable-mpi-fortran=yes \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -381,7 +381,7 @@ find -L . \
 
 ./configure --prefix=${UDUNITS} \
             --disable-shared \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 make
 make install
@@ -423,7 +423,7 @@ find -L . \
             --with-udunits2_incdir=${UDUNITS}/include \
             --with-udunits2_libdir=${UDUNITS}/lib \
             --with-x \
-            --build=$ARCH-slackware-linux
+            --build=$ARCH
 
 
 # Patch the Makefile to avoid "DSO missing from command line" error
