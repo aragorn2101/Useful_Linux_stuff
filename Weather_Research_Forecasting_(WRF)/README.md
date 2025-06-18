@@ -4,6 +4,9 @@ We propose installation scripts for WRF ARW (Advanced Research WRF). The source 
 
 The main system requirement is a 64-bit processor and operating system. The script were tested using 64-bit Slackware 14.2 or 15.0 GNU/Linux installed on the same Intel Core i7-7700K machine. Building and installing all the software on this machine takes less than 15 minutes. Since we have a high-end processor and lots of RAM, a longer build time would be expected on other machines. The final space taken on disk is around 1.1 GB for the WRF software only, and around 30 GB when the geographical static data is included.
 
+**NOTE:** we have included two installation scripts, namely `install_wrfv4.sh` and `install_wrfv4_slack.sh`. The "slack" version is meant for the Slackware distro since it uses the option `--build=$ARCH-slackware-linux`. The `install_wrfv4.sh` script is meant for any GNU/Linux distro.
+
+
 ## install_wrfv4.sh
 
 The script installs WRF and all its dependencies in a custom location. The later sections give details about the source code archives to be downloaded. The last section describes how to install NCAR Graphics and NCL separately in a Python environment.
