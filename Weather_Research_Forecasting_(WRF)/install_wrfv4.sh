@@ -125,7 +125,7 @@ export CPPFLAGS=-I${PKG}/deps/grib2/include
 export CXXFLAGS=-I${PKG}/deps/grib2/include
 export FCFLAGS="-O2 -fPIC -m64"
 export FFLAGS="-m64"
-export LDFLAGS="-L${PKG}/deps/grib2/lib -L/usr/lib${LIBDIRSUFFIX}"
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
 
 set -e
 
@@ -165,6 +165,7 @@ make install
 # Update environment variables
 export PATH=${PKG}/deps/grib2/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
+export LDFLAGS="-L${PKG}/deps/grib2/lib ${LDFLAGS}"
 
 
 
@@ -184,8 +185,7 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/grib2 \
-            --build=$ARCH
+./configure --prefix=${PKG}/deps/grib2
 
 make
 make install
@@ -209,10 +209,7 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-./configure --prefix=${PKG}/deps/grib2 \
-            --program-prefix= \
-            --program-suffix= \
-            --build=$ARCH
+./configure --prefix=${PKG}/deps/grib2
 
 make
 make install
@@ -251,8 +248,7 @@ find -L . \
 ./configure --prefix=${NETCDF} \
             --with-zlib=${PKG}/deps/grib2 \
             --enable-fortran \
-            --enable-shared \
-            --build=$ARCH
+            --enable-shared
 
 make
 make install
@@ -262,16 +258,18 @@ export PATH=${NETCDF}/bin:${PATH}
 export LD_LIBRARY_PATH=${NETCDF}/lib:${LD_LIBRARY_PATH}
 
 echo -e "
+export HDF5=${NETCDF}
 export NETCDF=${NETCDF}
 " >> ${PKG}/env.sh
 
 
 # Set relevant environment variables and update compilation flags
+export HDF5=${NETCDF}
 export NETCDF_INC=${NETCDF}/include
 export NETCDF_LIB=${NETCDF}/lib
-export CPPFLAGS=-I${NETCDF}/include\ ${CPPFLAGS}
-export CXXFLAGS=-I${NETCDF}/include\ ${CXXFLAGS}
-export LDFLAGS=-L${NETCDF}/lib\ ${LDFLAGS}
+export CPPFLAGS="-I${NETCDF}/include ${CPPFLAGS}"
+export CXXFLAGS="-I${NETCDF}/include ${CXXFLAGS}"
+export LDFLAGS="-L${NETCDF}/lib ${LDFLAGS}"
 
 
 
@@ -295,11 +293,15 @@ find -L . \
             --disable-dap \
             --enable-netcdf-4 \
             --enable-hdf5 \
-            --enable-shared \
-            --build=$ARCH
+            --enable-shared
 
 make
 make install
+
+
+# Set the LIBS environment variable
+export LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lm -ldl -lz"
+
 
 echo
 echo "---------------------------------------------------------------"
@@ -318,12 +320,12 @@ find -L . \
 
 ./configure --prefix=${NETCDF} \
             --disable-hdf5 \
-            --enable-shared \
-            --build=$ARCH
+            --enable-shared
 
 make
 make install
 
+export LIBS=
 
 
 ###  OpenMPI  ###
@@ -346,8 +348,7 @@ find -L . \
 ./configure --prefix=${PKG}/deps/openmpi \
             --sysconfdir=${PKG}/deps/openmpi/etc \
             --enable-mpi1-compatibility \
-            --enable-mpi-fortran=yes \
-            --build=$ARCH
+            --enable-mpi-fortran=yes
 
 make
 make install
@@ -355,7 +356,7 @@ make install
 # Update environment variables and compilation flags
 export PATH=${PKG}/deps/openmpi/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/deps/openmpi/lib:${LD_LIBRARY_PATH}
-export LDFLAGS=-L${PKG}/deps/openmpi/lib\ ${LDFLAGS}
+export LDFLAGS="-L${PKG}/deps/openmpi/lib ${LDFLAGS}"
 
 
 
@@ -380,8 +381,7 @@ find -L . \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 ./configure --prefix=${UDUNITS} \
-            --disable-shared \
-            --build=$ARCH
+            --disable-shared
 
 make
 make install
@@ -422,8 +422,7 @@ find -L . \
             --with-png_libdir=${PKG}/deps/grib2/lib \
             --with-udunits2_incdir=${UDUNITS}/include \
             --with-udunits2_libdir=${UDUNITS}/lib \
-            --with-x \
-            --build=$ARCH
+            --with-x
 
 
 # Patch the Makefile to avoid "DSO missing from command line" error

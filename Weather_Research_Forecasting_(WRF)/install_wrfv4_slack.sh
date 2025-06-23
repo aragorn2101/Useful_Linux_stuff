@@ -126,7 +126,7 @@ export CPPFLAGS=-I${PKG}/deps/grib2/include
 export CXXFLAGS=-I${PKG}/deps/grib2/include
 export FCFLAGS="-O2 -fPIC -m64"
 export FFLAGS="-m64"
-export LDFLAGS="-L${PKG}/deps/grib2/lib -L/usr/lib${LIBDIRSUFFIX}"
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
 
 set -e
 
@@ -166,6 +166,7 @@ make install
 # Update environment variables
 export PATH=${PKG}/deps/grib2/bin:${PATH}
 export LD_LIBRARY_PATH=${PKG}/deps/grib2/lib:${LD_LIBRARY_PATH}
+export LDFLAGS="-L${PKG}/deps/grib2/lib ${LDFLAGS}"
 
 
 
@@ -263,16 +264,18 @@ export PATH=${NETCDF}/bin:${PATH}
 export LD_LIBRARY_PATH=${NETCDF}/lib:${LD_LIBRARY_PATH}
 
 echo -e "
+export HDF5=${NETCDF}
 export NETCDF=${NETCDF}
 " >> ${PKG}/env.sh
 
 
 # Set relevant environment variables and update compilation flags
+export HDF5=${NETCDF}
 export NETCDF_INC=${NETCDF}/include
 export NETCDF_LIB=${NETCDF}/lib
-export CPPFLAGS=-I${NETCDF}/include\ ${CPPFLAGS}
-export CXXFLAGS=-I${NETCDF}/include\ ${CXXFLAGS}
-export LDFLAGS=-L${NETCDF}/lib\ ${LDFLAGS}
+export CPPFLAGS="-I${NETCDF}/include ${CPPFLAGS}"
+export CXXFLAGS="-I${NETCDF}/include ${CXXFLAGS}"
+export LDFLAGS="-L${NETCDF}/lib ${LDFLAGS}"
 
 
 
@@ -302,6 +305,11 @@ find -L . \
 make
 make install
 
+
+# Set the LIBS environment variable
+export LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lm -ldl -lz"
+
+
 echo
 echo "---------------------------------------------------------------"
 echo "Building netCDF Fortran ${NETCDF_F_VER} ..."
@@ -325,6 +333,7 @@ find -L . \
 make
 make install
 
+export LIBS=
 
 
 ###  OpenMPI  ###
